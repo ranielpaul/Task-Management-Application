@@ -1,58 +1,22 @@
 # Task Management Application
 
-This repository is a barebones framework for a task management application. The current goal is to document the planned structure before adding real functionality.
+This repository is for a fullstack task management application.
 
-The frontend renders a simple dashboard shell with empty design cards and a task table layout. API calls, hooks, backend routes, state handling, and CRUD behavior are intentionally left as comments and placeholder exports.
+## Stack Involved
 
-## Project Structure
+- Frontend: React, Vite, and Tailwind CSS.
+- Backend: FastAPI with Python.
+- Database: PostgreSQL.
+- API client: Axios.
 
-```text
-Task-Management-Application/
-|-- Backend/
-|   `-- main.py
-|-- Frontend/
-|   |-- public/
-|   |   |-- favicon.svg
-|   |   `-- icons.svg
-|   |-- src/
-|   |   |-- api/
-|   |   |   |-- Axios.js
-|   |   |   `-- TaskAPI.js
-|   |   |-- hooks/
-|   |   |   `-- useTasks.js
-|   |   |-- pages/
-|   |   |   `-- home/
-|   |   |       |-- Index.jsx
-|   |   |       `-- components/
-|   |   |           |-- Header.jsx
-|   |   |           |-- TaskActions.jsx
-|   |   |           |-- TaskForm.jsx
-|   |   |           |-- TaskRow.jsx
-|   |   |           `-- TaskTable.jsx
-|   |   |-- App.jsx
-|   |   |-- index.css
-|   |   `-- main.jsx
-|   |-- index.html
-|   |-- package.json
-|   `-- vite.config.js
-`-- readme.md
-```
 
 ## Backend
 
 - `Backend/main.py` is reserved for the backend application entry point.
-- Future backend work should define the API server, task routes, request validation, and database connection here or import them from dedicated backend modules.
+- Future backend work should define the FastAPI server, task routes, request validation, and PostgreSQL database connection here or import them from dedicated backend modules.
 - No backend functionality has been implemented yet.
 
-## Frontend
-
-- `Frontend/index.html` contains the root HTML document used by Vite.
-- `Frontend/vite.config.js` configures the React and Tailwind build setup.
-- `Frontend/src/main.jsx` mounts the React app into the HTML root element.
-- `Frontend/src/App.jsx` provides the application-level page wrapper.
-- `Frontend/src/index.css` imports Tailwind and is the future place for global styling.
-
-## Frontend Folders
+## Frontend 
 
 - `src/api/` should contain client-side API utilities.
 - `src/api/Axios.js` should eventually export the configured Axios client, including the base API URL and shared request settings.
@@ -70,6 +34,7 @@ Task-Management-Application/
 - `TaskTable.jsx` contains the current task table structure and should later receive task data from `useTasks`.
 - `TaskRow.jsx` is reserved for rendering one task per table row.
 - `TaskActions.jsx` is reserved for row-level edit, complete/incomplete, and delete buttons.
+- `Index.jsx` wires placeholder hook values and handlers into the home components through props.
 
 ## Required Features
 

@@ -1,32 +1,56 @@
 import { useState } from 'react';
+import { Search, Funnel } from 'lucide-react';
 
-// SearchFilterControls placeholder.
+const statusOptions = ['All', 'Active', 'Inactive', 'Completed'];
+
+// StatusDropdown placeholder.
 // Future contents:
-// - Open or close this status dropdown from the filter button.
-// - Filter tasks by All, Active, Inactive, or Completed.
-// - Combine the selected status with the task name search value.
-export function SearchFilterControls() {
+// - Reuse this menu for table filtering and row status selection.
+// - Persist the selected option through useTasks once task state is implemented.
+export function StatusDropdown({
+  selectedStatus = 'All',
+  onStatusChange,
+  label = 'Filter status',
+  align = 'right',
+  joined = false,
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative w-fit">
+    <div className="relative w-full">
       <button
         type="button"
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        className="h-9 rounded border border-gray-300 bg-white px-4 text-sm text-gray-700 shadow-sm"
+        title={`${label}: ${selectedStatus}`}
+        className={`flex h-10 w-full items-center justify-center gap-2 border border-gray-300 bg-white px-3 text-sm text-gray-700 shadow-sm hover:bg-gray-50 ${
+          joined ? 'rounded-r-lg border-l-0' : 'rounded-lg'
+        }`}
         onClick={() => setIsOpen((currentValue) => !currentValue)}
       >
-        Filter
+        <Funnel className="h-4 w-4" aria-hidden="true" />
+        <span className="truncate">{selectedStatus}</span>
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-11 z-10 w-40 rounded-lg border border-gray-200 bg-white p-2 shadow-sm">
-          {['All', 'Active', 'Inactive', 'Completed'].map((status) => (
+        <div
+          className={`absolute top-12 z-10 w-40 rounded-lg border border-gray-200 bg-white p-2 shadow-sm ${
+            align === 'left' ? 'left-0' : 'right-0'
+          }`}
+        >
+          {statusOptions.map((status) => (
             <button
               key={status}
               type="button"
-              className="block h-8 w-full rounded px-3 text-left text-sm text-gray-700"
+              className={`block h-8 w-full rounded px-3 text-left text-sm ${
+                status === selectedStatus
+                  ? 'bg-teal-600 text-white'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+              onClick={() => {
+                onStatusChange?.(status);
+                setIsOpen(false);
+              }}
             >
               {status}
             </button>
@@ -37,23 +61,52 @@ export function SearchFilterControls() {
   );
 }
 
+// SearchFilterControls placeholder.
+// Future contents:
+// - Filter tasks by All, Active, Inactive, or Completed.
+// - Combine the selected status with the task name search value.
+export function SearchFilterControls({ selectedStatus = 'All', onFilterTask }) {
+  return (
+    <StatusDropdown
+      selectedStatus={selectedStatus}
+      onStatusChange={onFilterTask}
+      label="Filter tasks"
+      joined
+    />
+  );
+}
+
 // Header placeholder.
 // Future contents:
 // - Dashboard title or summary text.
-// - Add task button if the form is opened from the header.
 // - Search input for finding tasks by name.
 // - SearchFilterControls for status filtering.
-export function Header() {
+export function Header({
+  searchTerm = '',
+  selectedStatus = 'All',
+  onSearchTask,
+  onFilterTask,
+}) {
   return (
-    <header className="rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-sm">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="h-8 w-64 rounded bg-gray-100" />
-        <div className="flex gap-3">
-          <div className="h-9 w-64 rounded border border-dashed border-gray-300 bg-gray-50" />
-          <SearchFilterControls />
-        </div>
+
+      <div className="grid w-full grid-cols-[80%_10%_10%]">
+        <input
+          type="search"
+          value={searchTerm}
+          placeholder="Search task"
+          className="h-10 w-full rounded-l-lg border border-gray-300 bg-white px-3 text-sm text-gray-700 focus:border-sky-600 focus:outline-none focus:ring-1 focus:ring-sky-600"
+          onChange={(event) => onSearchTask?.(event.target.value)}
+        />
+        <button
+          type="button"
+          className="flex h-10 w-full items-center justify-center border-y border-gray-300 bg-teal-600 px-4 text-white hover:bg-teal-700"
+          onClick={() => onSearchTask?.(searchTerm)}
+        >
+          <Search className="h-4 w-4" aria-hidden="true" />
+          <span className="sr-only">Search task</span>
+        </button>
+        <SearchFilterControls selectedStatus={selectedStatus} onFilterTask={onFilterTask} />
       </div>
-    </header>
   );
 }
 
