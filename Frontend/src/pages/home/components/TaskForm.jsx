@@ -12,7 +12,7 @@ function EmptyFormCard({ label }) {
 
 // AddTaskForm placeholder.
 // Future contents:
-// - Form fields for task title, description, due date, priority, and category.
+// - Form fields for task title and description.
 // - Submit button that calls the create task handler from useTasks.
 export function AddTaskForm() {
   return <EmptyFormCard label="Add task form placeholder" />;
@@ -21,7 +21,7 @@ export function AddTaskForm() {
 // EditTaskForm placeholder.
 // Future contents:
 // - Form fields prefilled with the selected task.
-// - Submit button that calls the update task handler from useTasks.
+// - Submit button that updates the task title and description through useTasks.
 export function EditTaskForm() {
   return <EmptyFormCard label="Edit task form placeholder" />;
 }

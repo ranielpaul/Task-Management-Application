@@ -56,7 +56,7 @@ Task-Management-Application/
 
 - `src/api/` should contain client-side API utilities.
 - `src/api/Axios.js` should eventually export the configured Axios client, including the base API URL and shared request settings.
-- `src/api/TaskAPI.js` should eventually export task-specific API functions such as create, read, update, delete, search, and filter requests.
+- `src/api/TaskAPI.js` should eventually export only the required task API functions: create, read, update, delete, search by name, and filter by status.
 - `src/hooks/` should contain reusable React hooks.
 - `src/hooks/useTasks.js` should eventually hold task state, loading/error state, and functions that connect UI components to the task API.
 - `src/pages/` should contain route-level page folders.
@@ -65,20 +65,20 @@ Task-Management-Application/
 
 ## Home Components
 
-- `Header.jsx` is reserved for the page title area, add-task entry point, search input, and filter controls.
-- `TaskForm.jsx` is reserved for add and edit task form placeholders.
+- `Header.jsx` is reserved for the page title area, task name search input, and a button-triggered status filter dropdown with All, Active, Inactive, and Completed options.
+- `TaskForm.jsx` is reserved for add and edit task form placeholders using only task title and description fields.
 - `TaskTable.jsx` contains the current task table structure and should later receive task data from `useTasks`.
 - `TaskRow.jsx` is reserved for rendering one task per table row.
 - `TaskActions.jsx` is reserved for row-level edit, complete/incomplete, and delete buttons.
 
-## Planned Features
+## Required Features
 
 - Add a task.
 - Mark a task as complete or incomplete.
-- Edit task details such as title, description, due date, priority, and category.
+- Edit task details such as task title and description.
 - Delete a task.
-- Search tasks by title, category, or description.
-- Filter tasks by all, active, inactive, and completed status.
+- Search tasks by name.
+- Filter tasks by All, Active, Inactive, and Completed status.
 - Combine search and filter behavior.
 
 ## Design Notes

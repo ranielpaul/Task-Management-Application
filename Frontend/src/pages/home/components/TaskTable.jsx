@@ -1,6 +1,6 @@
 import { TaskRow } from './TaskRow';
 
-const columns = ['Task', 'Description', 'Due Date', 'Priority', 'Category', 'Status', 'Actions'];
+const columns = ['Task', 'Description', 'Status', 'Actions'];
 
 // TaskTable placeholder.
 // Future contents:

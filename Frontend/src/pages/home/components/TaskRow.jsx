@@ -1,6 +1,6 @@
 import { TaskActions } from './TaskActions';
 
-const placeholderCells = ['task', 'description', 'due-date', 'priority', 'category', 'status'];
+const placeholderCells = ['task', 'description', 'status'];
 
 // TaskRow placeholder.
 // Future contents:
