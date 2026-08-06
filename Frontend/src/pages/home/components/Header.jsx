@@ -85,28 +85,28 @@ export function Header({
   searchTerm = '',
   selectedStatus = 'All',
   onSearchTask,
+  onApplySearch,
   onFilterTask,
 }) {
   return (
-
-      <div className="grid w-full grid-cols-[80%_10%_10%]">
-        <input
-          type="search"
-          value={searchTerm}
-          placeholder="Search task"
-          className="h-10 w-full rounded-l-lg border border-gray-300 bg-white px-3 text-sm text-gray-700 focus:border-sky-600 focus:outline-none focus:ring-1 focus:ring-sky-600"
-          onChange={(event) => onSearchTask?.(event.target.value)}
-        />
-        <button
-          type="button"
-          className="flex h-10 w-full items-center justify-center border-y border-gray-300 bg-teal-600 px-4 text-white hover:bg-teal-700"
-          onClick={() => onSearchTask?.(searchTerm)}
-        >
-          <Search className="h-4 w-4" aria-hidden="true" />
-          <span className="sr-only">Search task</span>
-        </button>
-        <SearchFilterControls selectedStatus={selectedStatus} onFilterTask={onFilterTask} />
-      </div>
+    <div className="grid w-full grid-cols-[80%_10%_10%]">
+      <input
+        type="search"
+        value={searchTerm}
+        placeholder="Search task"
+        className="h-10 w-full rounded-l-lg border border-gray-300 bg-white px-3 text-sm text-gray-700 hover:border-teal-600 focus:outline-none"
+        onChange={(event) => onSearchTask?.(event.target.value)}
+      />
+      <button
+        type="button"
+        className="flex h-10 w-full items-center justify-center border-y border-gray-300 bg-teal-600 px-4 text-white hover:bg-teal-700"
+        onClick={() => onApplySearch?.()}
+      >
+        <Search className="h-4 w-4" aria-hidden="true" />
+        <span className="sr-only">Search task</span>
+      </button>
+      <SearchFilterControls selectedStatus={selectedStatus} onFilterTask={onFilterTask} />
+    </div>
   );
 }
 

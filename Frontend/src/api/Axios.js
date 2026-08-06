@@ -1,13 +1,21 @@
-/*
-  Axios client placeholder.
+import axios from 'axios';
 
-  Future contents:
-  - Import axios.
-  - Create a shared axios instance.
-  - Set the backend base URL.
-  - Add shared headers or interceptors if authentication is added.
+/*
+  Shared Axios client.
+
+  - Base URL comes from the VITE_API_BASE_URL env var, defaulting to the
+    local FastAPI server.
+  - JSON headers are set by default so task payloads are sent correctly.
+  - Add interceptors or auth headers here later if needed.
 */
 
-export const apiClient = null;
+const baseURL = import.meta.env?.VITE_API_BASE_URL ?? 'http://localhost:8000';
+
+export const apiClient = axios.create({
+  baseURL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 export default apiClient;

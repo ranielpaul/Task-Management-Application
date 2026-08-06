@@ -1,29 +1,27 @@
-import { Funnel } from 'lucide-react';
 import { TaskRow } from './TaskRow';
 
 const statusOptions = ['All', 'Active', 'Inactive', 'Completed'];
 
-// TaskTable placeholder.
-// Future contents:
-// - Receive tasks as props or from useTasks.
-// - Render one table row per task.
-// - Wire row action buttons to edit, delete, and mark-complete handlers.
+// TaskTable.
+// - Receives tasks as props from useTasks.
+// - Renders one table row per task.
+// - Shows a loading message while fetching, an empty state when there are no
+//   tasks, and wires row action buttons to the provided handlers.
 export function TaskTable({
   tasks = [],
   selectedStatus = 'All',
+  isLoading = false,
   onFilterTask,
   onEditTask,
   onDeleteTask,
   onToggleTaskStatus,
 }) {
-  const rows = tasks.length > 0 ? tasks : [null];
-
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full table-fixed text-left text-sm">
         <colgroup>
-          <col className="w-[10%]" />
-          <col className="w-[60%]" />
+          <col className="w-[20%]" />
+          <col className="w-[50%]" />
           <col className="w-[10%]" />
           <col className="w-[10%]" />
         </colgroup>
@@ -44,7 +42,7 @@ export function TaskTable({
                   onChange={(event) => onFilterTask?.(event.target.value)}
                 >
                   {statusOptions.map((status) => (
-                    <option key={status} value={status} className="flex items-center justify-center">
+                    <option key={status} value={status}>
                       {status}
                     </option>
                   ))}
@@ -57,16 +55,30 @@ export function TaskTable({
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {rows.map((task, index) => (
-            <TaskRow
-              key={task?.id ?? `placeholder-${index}`}
-              rowIndex={index}
-              task={task}
-              onEditTask={onEditTask}
-              onDeleteTask={onDeleteTask}
-              onToggleTaskStatus={onToggleTaskStatus}
-            />
-          ))}
+          {isLoading ? (
+            <tr>
+              <td colSpan={4} className="px-5 py-10 text-center text-sm text-gray-500">
+                Loading tasks…
+              </td>
+            </tr>
+          ) : tasks.length === 0 ? (
+            <tr>
+              <td colSpan={4} className="px-5 py-10 text-center text-sm text-gray-500">
+                No tasks found{selectedStatus !== 'All' ? ` with status "${selectedStatus}"` : ''}.
+              </td>
+            </tr>
+          ) : (
+            tasks.map((task, index) => (
+              <TaskRow
+                key={task.id}
+                rowIndex={index}
+                task={task}
+                onEditTask={onEditTask}
+                onDeleteTask={onDeleteTask}
+                onToggleTaskStatus={onToggleTaskStatus}
+              />
+            ))
+          )}
         </tbody>
       </table>
     </div>

@@ -4,10 +4,9 @@ import { TaskForm } from './components/TaskForm';
 import { TaskTable } from './components/TaskTable';
 import { useTasks } from '../../hooks/useTasks';
 
-// Home page scaffold.
-// Future contents:
-// - Connect task data and CRUD handlers to the components below.
-// - Keep page composition here while keeping individual UI sections in components.
+// Home page.
+// - Connects task data, loading/error state, and CRUD handlers to the UI.
+// - Keeps page composition here while individual UI sections live in components.
 export function Home() {
   const {
     tasks,
@@ -22,7 +21,10 @@ export function Home() {
     deleteTask,
     toggleTaskStatus,
     searchTasks,
+    applySearch,
     filterTasks,
+    isLoading,
+    error,
   } = useTasks();
 
   return (
@@ -30,7 +32,16 @@ export function Home() {
       <h1 className="mb-4 text-2xl font-semibold text-gray-900">
         Task Management Dashboard
       </h1>
-        
+
+      {error && (
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
+          {error}
+        </div>
+      )}
+
       <div className="flex justify-end">
         <button
           type="button"
@@ -41,7 +52,7 @@ export function Home() {
           Add Task
         </button>
       </div>
-        
+
       <TaskForm
         isOpen={isTaskFormOpen}
         selectedTask={selectedTask}
@@ -56,6 +67,7 @@ export function Home() {
             searchTerm={searchTerm}
             selectedStatus={selectedStatus}
             onSearchTask={searchTasks}
+            onApplySearch={applySearch}
             onFilterTask={filterTasks}
           />
         </div>
@@ -63,6 +75,7 @@ export function Home() {
         <TaskTable
           tasks={tasks}
           selectedStatus={selectedStatus}
+          isLoading={isLoading}
           onFilterTask={filterTasks}
           onEditTask={editTask}
           onDeleteTask={deleteTask}
