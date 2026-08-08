@@ -1,16 +1,10 @@
-"""Task routes for the Task Management API.
-
-Moved out of main.py to keep the app entry point small. This router exposes
-task CRUD, plus name search and status filtering.
-"""
-
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import Task
+from models.models import Task
 from schemas import TaskCreate, TaskRead, TaskUpdate
 
 router = APIRouter(prefix="/api/tasks", tags=["tasks"])
@@ -102,3 +96,4 @@ def delete_task(task_id: str, db: Session = Depends(get_db)):
     db.delete(task)
     db.commit()
     return None
+

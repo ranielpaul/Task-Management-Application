@@ -61,32 +61,14 @@ export function StatusDropdown({
   );
 }
 
-// SearchFilterControls placeholder.
-export function SearchFilterControls({ selectedStatus = 'All', onFilterTask }) {
-  return (
-    <StatusDropdown
-      selectedStatus={selectedStatus}
-      onStatusChange={onFilterTask}
-      label="Filter tasks"
-      joined
-    />
-  );
-}
-
-// Header placeholder.
-// Future contents:
-// - Dashboard title or summary text.
-// - Search input for finding tasks by name.
-// - SearchFilterControls for status filtering.
 export function Header({
   searchTerm = '',
   selectedStatus = 'All',
   onSearchTask,
   onApplySearch,
-  onFilterTask,
 }) {
   return (
-    <div className="grid w-full grid-cols-[80%_10%_10%]">
+    <div className="grid w-full grid-cols-[90%_10%]">
       <input
         type="search"
         value={searchTerm}
@@ -96,14 +78,13 @@ export function Header({
       />
       <button
         type="button"
-        className="flex h-10 w-full items-center justify-center gap-x-2 border-y border-gray-300 bg-teal-600 px-4 text-white hover:bg-teal-700"
+        className="flex h-10 w-full items-center rounded-r-lg justify-center gap-x-2 border-y border-gray-300 bg-teal-600 px-4 text-white hover:bg-teal-700"
         onClick={() => onApplySearch?.()}
       >
         <p> Search </p> 
         <Search className="h-4 w-4" aria-hidden="true" />
         <span className="sr-only">Search task</span>
       </button>
-      <SearchFilterControls selectedStatus={selectedStatus} onFilterTask={onFilterTask} />
     </div>
   );
 }

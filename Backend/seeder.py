@@ -1,18 +1,15 @@
-"""Seed the tasks table with sample data.
-
-Run from the Backend folder:
-
+"""
+Seed the tasks table with sample data.
     python seeder.py          # insert sample tasks (skips if data exists)
     python seeder.py --reset  # delete all tasks, then insert fresh sample data
 
-Uses the same DATABASE_URL configuration as database.py.
 """
 
 import argparse
 import sys
 
 from database import SessionLocal
-from models import Task
+from models.models import Task
 
 SAMPLE_TASKS = [
     {

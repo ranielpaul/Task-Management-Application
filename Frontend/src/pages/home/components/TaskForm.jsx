@@ -63,9 +63,6 @@ function ModalShell({ title, onCancel, children, footer }) {
   );
 }
 
-// AddTaskForm modal.
-// - Task title and task description each on their own row.
-// - Description is a multi-line textarea.
 export function AddTaskForm({ onCreateTask, onCancel }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -111,9 +108,6 @@ export function AddTaskForm({ onCreateTask, onCancel }) {
   );
 }
 
-// EditTaskForm modal.
-// - Task title and task description each on their own row.
-// - Description is a multi-line textarea.
 export function EditTaskForm({ selectedTask, onEditTask, onCancel }) {
   const [title, setTitle] = useState(selectedTask?.title ?? '');
   const [description, setDescription] = useState(selectedTask?.description ?? '');
@@ -139,7 +133,7 @@ export function EditTaskForm({ selectedTask, onEditTask, onCancel }) {
           <button
             type="submit"
             form="edit-task-form"
-            className="flex h-9 items-center gap-2 rounded bg-sky-600 px-4 text-sm font-medium text-white hover:bg-sky-700"
+            className="flex h-9 items-center gap-2 rounded bg-teal-600 px-4 text-sm font-medium text-white hover:bg-sky-700"
           >
             <Save className="h-4 w-4" aria-hidden="true" />
             Save Task
@@ -158,10 +152,6 @@ export function EditTaskForm({ selectedTask, onEditTask, onCancel }) {
     </ModalShell>
   );
 }
-
-// TaskForm.
-// - Decides whether to show add or edit mode.
-// - Both modes render as an overlay modal.
 export function TaskForm({ isOpen = false, selectedTask, onCreateTask, onEditTask, onCancel }) {
   if (!isOpen) {
     return null;
