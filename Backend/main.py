@@ -1,9 +1,9 @@
 """
 Task Management API entry point.
 
-FastAPI server exposed by the task router. Kept small on purpose: task routes
-live in routers/tasks.py. Database setup is in database.py, ORM models in
-models.py, and validation schemas in schemas.py.
+FastAPI server exposed by the task router. Kept small on purpose: the shared
+database setup, ORM models, validation schemas, and the seeder live in the
+`core` package, while the task routes live in routers/tasks.py.
 
 Run locally:
     cd Backend
@@ -14,7 +14,7 @@ Run locally:
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from database import Base, engine
+from core.database import Base, engine
 from routers.tasks import router as tasks_router
 
 # Create tables on startup if they do not exist yet.
@@ -45,3 +45,4 @@ app.include_router(tasks_router)
 def health_check():
     """Simple health check."""
     return {"status": "ok", "service": "Task Management API"}
+

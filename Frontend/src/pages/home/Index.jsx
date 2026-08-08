@@ -11,6 +11,7 @@ export function Home() {
   const {
     tasks,
     searchTerm,
+    selectedState,
     selectedStatus,
     isTaskFormOpen,
     selectedTask,
@@ -20,9 +21,11 @@ export function Home() {
     editTask,
     deleteTask,
     toggleTaskStatus,
+    toggleTaskState,
     searchTasks,
     applySearch,
-    filterTasks,
+    filterByState,
+    filterByStatus,
     isLoading,
     error,
   } = useTasks();
@@ -65,21 +68,22 @@ export function Home() {
         <div className="border-b border-gray-200 px-4 py-4">
           <Header
             searchTerm={searchTerm}
-            selectedStatus={selectedStatus}
             onSearchTask={searchTasks}
             onApplySearch={applySearch}
-            onFilterTask={filterTasks}
           />
         </div>
 
         <TaskTable
           tasks={tasks}
+          selectedState={selectedState}
           selectedStatus={selectedStatus}
           isLoading={isLoading}
-          onFilterTask={filterTasks}
+          onFilterByState={filterByState}
+          onFilterByStatus={filterByStatus}
           onEditTask={editTask}
           onDeleteTask={deleteTask}
           onToggleTaskStatus={toggleTaskStatus}
+          onToggleTaskState={toggleTaskState}
         />
       </section>
     </main>

@@ -1,27 +1,8 @@
-import { CheckCircle2, Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 
-// MarkTaskButton placeholder.
-// Future contents:
-// - Toggle the row task between complete and incomplete.
-// - Call the status update handler from useTasks.
-export function MarkTaskButton({ task, onToggleTaskStatus }) {
-  return (
-    <button
-      type="button"
-      className="flex h-8 w-8 items-center justify-center rounded border border-gray-300 bg-white text-teal-600 hover:bg-gray-100"
-      aria-label="Complete task"
-      title="Complete task"
-      onClick={() => onToggleTaskStatus?.(task)}
-    >
-      <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
-    </button>
-  );
-}
-
-// DeleteTaskButton placeholder.
-// Future contents:
-// - Ask for confirmation before deleting a task.
-// - Call the delete task handler from useTasks.
+// DeleteTaskButton.
+// - Asks for confirmation before deleting a task.
+// - Calls the delete handler from useTasks.
 export function DeleteTaskButton({ task, onDeleteTask }) {
   function handleDelete() {
     const confirmed = window.confirm(`Delete task "${task?.title ?? 'this task'}"?`);
@@ -43,10 +24,9 @@ export function DeleteTaskButton({ task, onDeleteTask }) {
   );
 }
 
-// EditTaskButton placeholder.
-// Future contents:
-// - Open the task form in edit mode for the selected row.
-// - Pass the selected task into the edit flow.
+// EditTaskButton.
+// - Opens the task form in edit mode for the selected row.
+// - Passes the selected task into the edit flow.
 export function EditTaskButton({ task, onEditTask }) {
   return (
     <button
@@ -61,15 +41,13 @@ export function EditTaskButton({ task, onEditTask }) {
   );
 }
 
-// TaskActions placeholder.
-// Future contents:
-// - Receive a task object and row action handlers as props.
-// - Render edit, mark complete, and delete controls for one task row.
-export function TaskActions({ task, onEditTask, onDeleteTask, onToggleTaskStatus }) {
+// TaskActions.
+// - Receives a task object and row action handlers as props.
+// - Renders edit and delete controls for one task row.
+export function TaskActions({ task, onEditTask, onDeleteTask }) {
   return (
-    <div className="flex gap-2">
+    <div className="flex justify-center gap-2">
       <EditTaskButton task={task} onEditTask={onEditTask} />
-      <MarkTaskButton task={task} onToggleTaskStatus={onToggleTaskStatus} />
       <DeleteTaskButton task={task} onDeleteTask={onDeleteTask} />
     </div>
   );

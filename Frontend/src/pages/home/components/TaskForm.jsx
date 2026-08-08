@@ -33,6 +33,26 @@ function EmptyFormTextarea({ label, value, onChange }) {
   );
 }
 
+function SelectField({ label, value, onChange, options }) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-sm font-medium text-gray-700">{label}</span>
+      <select
+        aria-label={label}
+        value={value}
+        className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-700 focus:border-sky-600 focus:outline-none focus:ring-1 focus:ring-sky-600"
+        onChange={(event) => onChange(event.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function ModalShell({ title, onCancel, children, footer }) {
   return (
     <div
@@ -63,13 +83,17 @@ function ModalShell({ title, onCancel, children, footer }) {
   );
 }
 
+// AddTaskForm modal.
+// - Task title, description, state, and status each on their own row.
 export function AddTaskForm({ onCreateTask, onCancel }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [state, setState] = useState('Active');
+  const [status, setStatus] = useState('Incomplete');
 
   function handleSubmit(event) {
     event.preventDefault();
-    onCreateTask?.({ title, description });
+    onCreateTask?.({ title, description, state, status });
   }
 
   return (
@@ -103,18 +127,37 @@ export function AddTaskForm({ onCreateTask, onCancel }) {
           value={description}
           onChange={setDescription}
         />
+        <div className="grid grid-cols-2 gap-3">
+          <SelectField
+            label="State"
+            value={state}
+            onChange={setState}
+            options={['Active', 'Inactive']}
+          />
+          <SelectField
+            label="Status"
+            value={status}
+            onChange={setStatus}
+            options={['Incomplete', 'Completed']}
+          />
+        </div>
       </form>
     </ModalShell>
   );
 }
 
+// EditTaskForm modal.
+// - Task title, description, state, and status each on their own row.
+// - Pre-filled from the selected task.
 export function EditTaskForm({ selectedTask, onEditTask, onCancel }) {
   const [title, setTitle] = useState(selectedTask?.title ?? '');
   const [description, setDescription] = useState(selectedTask?.description ?? '');
+  const [state, setState] = useState(selectedTask?.state ?? 'Active');
+  const [status, setStatus] = useState(selectedTask?.status ?? 'Incomplete');
 
   function handleSubmit(event) {
     event.preventDefault();
-    onEditTask?.({ title, description });
+    onEditTask?.({ title, description, state, status });
   }
 
   return (
@@ -141,17 +184,39 @@ export function EditTaskForm({ selectedTask, onEditTask, onCancel }) {
         </>
       }
     >
-      <form id="edit-task-form" className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+      <form
+        id="edit-task-form"
+        className="flex flex-col space-y-4"
+        onSubmit={handleSubmit}
+      >
         <EmptyFormField label="Task title" value={title} onChange={setTitle} />
         <EmptyFormTextarea
           label="Task description"
           value={description}
           onChange={setDescription}
         />
+        <div className="grid grid-cols-2 gap-3">
+          <SelectField
+            label="State"
+            value={state}
+            onChange={setState}
+            options={['Active', 'Inactive']}
+          />
+          <SelectField
+            label="Status"
+            value={status}
+            onChange={setStatus}
+            options={['Incomplete', 'Completed']}
+          />
+        </div>
       </form>
     </ModalShell>
   );
 }
+
+// TaskForm.
+// - Decides whether to show add or edit mode.
+// - Both modes render as an overlay modal.
 export function TaskForm({ isOpen = false, selectedTask, onCreateTask, onEditTask, onCancel }) {
   if (!isOpen) {
     return null;

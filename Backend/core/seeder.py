@@ -1,56 +1,67 @@
-"""
-Seed the tasks table with sample data.
-    python seeder.py          # insert sample tasks (skips if data exists)
-    python seeder.py --reset  # delete all tasks, then insert fresh sample data
+"""Seed the tasks table with sample data.
 
+Run from the Backend folder:
+
+    python -m core.seeder          # insert sample tasks (skips if data exists)
+    python -m core.seeder --reset  # delete all tasks, then insert fresh sample data
+
+Uses the same DATABASE_URL configuration as core.database.
 """
 
 import argparse
 import sys
 
-from database import SessionLocal
-from models.models import Task
+from .database import SessionLocal
+from .models import Task
 
 SAMPLE_TASKS = [
     {
         "title": "Design the dashboard layout",
         "description": "Create wireframes and a color palette for the task dashboard.",
-        "status": "Active",
+        "state": "Active",
+        "status": "Completed",
     },
     {
         "title": "Set up the backend API",
         "description": "Build FastAPI routes, request validation, and a PostgreSQL connection.",
-        "status": "Active",
+        "state": "Active",
+        "status": "Incomplete",
     },
     {
         "title": "Write API client functions",
         "description": "Implement create, read, update, delete, search, and filter in TaskAPI.",
-        "status": "Inactive",
+        "state": "Inactive",
+        "status": "Incomplete",
     },
     {
         "title": "Add task search and filter",
         "description": "Combine name search with status filtering in the home header.",
+        "state": "Active",
         "status": "Completed",
     },
     {
         "title": "Write documentation",
         "description": "Document how to run the frontend and backend locally.",
+        "state": "Inactive",
         "status": "Completed",
     },
     {
         "title": "Review pull requests",
         "description": "Review and merge pending feature branches for the team.",
-        "status": "Inactive",
+        "state": "Inactive",
+        "status": "Incomplete",
     },
     {
         "title": "Set up CI pipeline",
         "description": "Add linting and automated tests to the repository.",
-        "status": "Active",
+        "state": "Active",
+        "status": "Incomplete",
     },
     {
         "title": "Polish the dashboard",
         "description": "Refine spacing, colors, and empty states for a cleaner UI.",
-        "status": "Inactive",
+        "state": "Inactive",
+        "status": "Incomplete",
     },
 ]
 
@@ -96,3 +107,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

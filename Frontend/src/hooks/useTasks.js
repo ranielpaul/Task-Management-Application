@@ -11,13 +11,14 @@ import { taskApi } from '../api/TaskAPI';
   - Typing in the input updates `searchTerm` (the text shown in the box).
   - Results are only recomputed after the search button is pressed, which
     copies `searchTerm` into `appliedSearchTerm`.
-  - The status filter, by contrast, applies immediately.
+  - The state and status filters apply immediately.
 */
 
 export function useTasks() {
   const [tasks, setTasks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [appliedSearchTerm, setAppliedSearchTerm] = useState('');
+  const [selectedState, setSelectedState] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -25,7 +26,7 @@ export function useTasks() {
   const [error, setError] = useState('');
 
   // Load tasks from the API on mount and whenever the applied search or
-  // selected status change, so filtering and search are handled server-side.
+  // selected state/status change, so filtering and search are handled server-side.
   useEffect(() => {
     let isMounted = true;
 
@@ -35,6 +36,7 @@ export function useTasks() {
         setError('');
         const data = await taskApi.fetchTasks({
           search: appliedSearchTerm || undefined,
+          state: selectedState,
           status: selectedStatus,
         });
         if (isMounted) {
@@ -56,18 +58,21 @@ export function useTasks() {
     return () => {
       isMounted = false;
     };
-  }, [appliedSearchTerm, selectedStatus]);
+  }, [appliedSearchTerm, selectedState, selectedStatus]);
 
   const visibleTasks = useMemo(() => {
     return tasks.filter((task) => {
       const matchesSearch = task.title
         .toLowerCase()
         .includes(appliedSearchTerm.toLowerCase());
-      const matchesStatus = selectedStatus === 'All' || task.status === selectedStatus;
+      const matchesState =
+        selectedState === 'All' || task.state === selectedState;
+      const matchesStatus =
+        selectedStatus === 'All' || task.status === selectedStatus;
 
-      return matchesSearch && matchesStatus;
+      return matchesSearch && matchesState && matchesStatus;
     });
-  }, [tasks, appliedSearchTerm, selectedStatus]);
+  }, [tasks, appliedSearchTerm, selectedState, selectedStatus]);
 
   function openAddTaskForm() {
     setSelectedTask(null);
@@ -102,8 +107,8 @@ export function useTasks() {
   // Called two ways:
   // 1. From a row Edit button with the full task object (has an `id`) -> open
   //    the edit modal for that task.
-  // 2. From the EditTaskForm submit with just `{ title, description }` (no `id`)
-  //    -> save the changes to the currently selected task.
+  // 2. From the EditTaskForm submit with `{ title, description, state, status }`
+  //    (no `id`) -> save the changes to the currently selected task.
   function editTask(taskOrData) {
     if (taskOrData?.id) {
       selectTaskForEdit(taskOrData);
@@ -143,6 +148,8 @@ export function useTasks() {
     }
   }
 
+  // Toggle a task's status (Completed <-> Incomplete). Called by clicking the
+  // Status cell in the table.
   async function toggleTaskStatus(taskToToggle) {
     try {
       setError('');
@@ -155,6 +162,20 @@ export function useTasks() {
     }
   }
 
+  // Toggle a task's state (Active <-> Inactive). Called by clicking the State
+  // cell in the table.
+  async function toggleTaskState(taskToToggle) {
+    try {
+      setError('');
+      const updatedTask = await taskApi.toggleTaskState(taskToToggle?.id);
+      setTasks((currentTasks) =>
+        currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
+      );
+    } catch (err) {
+      setError(err?.message ?? 'Failed to update task state.');
+    }
+  }
+
   function searchTasks(nextSearchTerm) {
     setSearchTerm(nextSearchTerm);
   }
@@ -163,13 +184,18 @@ export function useTasks() {
     setAppliedSearchTerm(searchTerm);
   }
 
-  function filterTasks(nextStatus) {
+  function filterByState(nextState) {
+    setSelectedState(nextState);
+  }
+
+  function filterByStatus(nextStatus) {
     setSelectedStatus(nextStatus);
   }
 
   return {
     tasks: visibleTasks,
     searchTerm,
+    selectedState,
     selectedStatus,
     isTaskFormOpen,
     selectedTask,
@@ -181,9 +207,11 @@ export function useTasks() {
     editTask,
     deleteTask,
     toggleTaskStatus,
+    toggleTaskState,
     searchTasks,
     applySearch,
-    filterTasks,
+    filterByState,
+    filterByStatus,
   };
 }
 

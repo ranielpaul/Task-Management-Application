@@ -5,8 +5,9 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-# Keep in sync with models.VALID_STATUSES and the frontend filter options.
-TaskStatus = Literal["Active", "Inactive", "Completed"]
+# Keep in sync with models.VALID_STATES / VALID_STATUSES and the frontend filters.
+TaskState = Literal["Active", "Inactive"]
+TaskStatus = Literal["Completed", "Incomplete"]
 
 
 class TaskBase(BaseModel):
@@ -15,12 +16,14 @@ class TaskBase(BaseModel):
 
 
 class TaskCreate(TaskBase):
-    status: Optional[TaskStatus] = "Active"
+    state: Optional[TaskState] = "Active"
+    status: Optional[TaskStatus] = "Incomplete"
 
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=1000)
+    state: Optional[TaskState] = None
     status: Optional[TaskStatus] = None
 
 
@@ -28,4 +31,6 @@ class TaskRead(TaskBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
+    state: TaskState
     status: TaskStatus
+

@@ -3,14 +3,15 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Column, String, DateTime
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, DateTime, String
 from sqlalchemy import Enum as SqlEnum
+from sqlalchemy.dialects.postgresql import UUID
 
-from database import Base
+from .database import Base
 
-# Keep status values in sync with the frontend filter options.
-VALID_STATUSES = ["Active", "Inactive", "Completed"]
+# Keep these in sync with schemas.py and the frontend filter options.
+VALID_STATES = ["Active", "Inactive"]
+VALID_STATUSES = ["Completed", "Incomplete"]
 
 
 class Task(Base):
@@ -25,9 +26,15 @@ class Task(Base):
     )
     title = Column(String(255), nullable=False)
     description = Column(String(1000), nullable=False, default="")
-    status = Column(
-        SqlEnum(*VALID_STATUSES, name="task_status"),
+    state = Column(
+        SqlEnum(*VALID_STATES, name="task_state"),
         nullable=False,
         default="Active",
     )
+    status = Column(
+        SqlEnum(*VALID_STATUSES, name="task_status"),
+        nullable=False,
+        default="Incomplete",
+    )
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+

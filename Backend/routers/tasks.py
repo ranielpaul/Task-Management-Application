@@ -1,11 +1,12 @@
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from database import get_db
-from models.models import Task
-from schemas import TaskCreate, TaskRead, TaskUpdate
+from core.database import get_db
+from core.models import Task
+from core.schemas import TaskCreate, TaskRead, TaskUpdate
 
 router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 
@@ -13,11 +14,15 @@ router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 @router.get("", response_model=List[TaskRead])
 def list_tasks(
     search: Optional[str] = Query(default=None, description="Filter by task title"),
-    status: Optional[str] = Query(default=None, description="Status to filter by"),
+    state: Optional[str] = Query(default=None, description="State to filter by (Active/Inactive)"),
+    status: Optional[str] = Query(default=None, description="Status to filter by (Completed/Incomplete)"),
     db: Session = Depends(get_db),
 ):
-    """Return all tasks, optionally filtered by name search and/or status."""
+    """Return all tasks, optionally filtered by name search, state, and/or status."""
     query = db.query(Task)
+
+    if state and state != "All":
+        query = query.filter(Task.state == state)
 
     if status and status != "All":
         query = query.filter(Task.status == status)
@@ -29,28 +34,13 @@ def list_tasks(
     return query.order_by(Task.created_at.desc()).all()
 
 
-@router.get("/status-filter", response_model=List[TaskRead])
-def filter_by_status(
-    status: str = Query(..., description="Status: Active, Inactive, or Completed"),
-    db: Session = Depends(get_db),
-):
-    """Return tasks matching a specific status."""
-    if status == "All":
-        return db.query(Task).order_by(Task.created_at.desc()).all()
-    return (
-        db.query(Task)
-        .filter(Task.status == status)
-        .order_by(Task.created_at.desc())
-        .all()
-    )
-
-
 @router.post("", response_model=TaskRead, status_code=201)
 def create_task(payload: TaskCreate, db: Session = Depends(get_db)):
     """Create a new task."""
     task = Task(
         title=payload.title.strip(),
         description=payload.description.strip(),
+        state=payload.state,
         status=payload.status,
     )
     db.add(task)
@@ -60,18 +50,18 @@ def create_task(payload: TaskCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/{task_id}", response_model=TaskRead)
-def get_task(task_id: str, db: Session = Depends(get_db)):
+def get_task(task_id: UUID, db: Session = Depends(get_db)):
     """Return a single task by id."""
-    task = db.query(Task).get(task_id)
+    task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
 
 @router.put("/{task_id}", response_model=TaskRead)
-def update_task(task_id: str, payload: TaskUpdate, db: Session = Depends(get_db)):
-    """Update a task's title, description, and/or status."""
-    task = db.query(Task).get(task_id)
+def update_task(task_id: UUID, payload: TaskUpdate, db: Session = Depends(get_db)):
+    """Update a task's title, description, state, and/or status."""
+    task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
 
@@ -79,6 +69,8 @@ def update_task(task_id: str, payload: TaskUpdate, db: Session = Depends(get_db)
         task.title = payload.title.strip()
     if payload.description is not None:
         task.description = payload.description.strip()
+    if payload.state is not None:
+        task.state = payload.state
     if payload.status is not None:
         task.status = payload.status
 
@@ -87,13 +79,25 @@ def update_task(task_id: str, payload: TaskUpdate, db: Session = Depends(get_db)
     return task
 
 
+@router.patch("/{task_id}/toggle", response_model=TaskRead)
+def toggle_task_status(task_id: UUID, db: Session = Depends(get_db)):
+    """Toggle a task's status between Completed and Incomplete."""
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    task.status = "Incomplete" if task.status == "Completed" else "Completed"
+    db.commit()
+    db.refresh(task)
+    return task
+
+
 @router.delete("/{task_id}", status_code=204)
-def delete_task(task_id: str, db: Session = Depends(get_db)):
+def delete_task(task_id: UUID, db: Session = Depends(get_db)):
     """Delete a task by id."""
-    task = db.query(Task).get(task_id)
+    task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     db.delete(task)
     db.commit()
     return None
-
