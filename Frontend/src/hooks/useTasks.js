@@ -5,8 +5,7 @@ import { taskApi } from '../api/TaskAPI';
   useTasks hook.
 
   Owns task state, loading/error state, and the CRUD/search/filter handlers.
-  All data operations go through taskApi so the hook is ready to use the real
-  backend API once it is implemented.
+  All data operations go through taskApi so the hook talks to the real backend.
 
   Search behavior:
   - Typing in the input updates `searchTerm` (the text shown in the box).
@@ -25,7 +24,8 @@ export function useTasks() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Load tasks from the API on mount.
+  // Load tasks from the API on mount and whenever the applied search or
+  // selected status change, so filtering and search are handled server-side.
   useEffect(() => {
     let isMounted = true;
 
@@ -33,7 +33,10 @@ export function useTasks() {
       try {
         setIsLoading(true);
         setError('');
-        const data = await taskApi.fetchTasks();
+        const data = await taskApi.fetchTasks({
+          search: appliedSearchTerm || undefined,
+          status: selectedStatus,
+        });
         if (isMounted) {
           setTasks(data);
         }
@@ -53,7 +56,7 @@ export function useTasks() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [appliedSearchTerm, selectedStatus]);
 
   const visibleTasks = useMemo(() => {
     return tasks.filter((task) => {
@@ -96,9 +99,13 @@ export function useTasks() {
     setIsTaskFormOpen(true);
   }
 
-  async function editTask(taskOrData) {
-    // Called with a task object to select it for editing.
-    if (!taskOrData?.title && taskOrData?.id) {
+  // Called two ways:
+  // 1. From a row Edit button with the full task object (has an `id`) -> open
+  //    the edit modal for that task.
+  // 2. From the EditTaskForm submit with just `{ title, description }` (no `id`)
+  //    -> save the changes to the currently selected task.
+  function editTask(taskOrData) {
+    if (taskOrData?.id) {
       selectTaskForEdit(taskOrData);
       return;
     }
@@ -107,16 +114,21 @@ export function useTasks() {
       return;
     }
 
-    try {
-      setError('');
-      const updatedTask = await taskApi.updateTask(selectedTask?.id, taskOrData);
-      setTasks((currentTasks) =>
-        currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
-      );
-      closeTaskForm();
-    } catch (err) {
-      setError(err?.message ?? 'Failed to update task.');
+    const taskId = selectedTask?.id;
+    if (!taskId) {
+      setError('No task selected for editing.');
+      return;
     }
+
+    return taskApi
+      .updateTask(taskId, taskOrData)
+      .then((updatedTask) => {
+        setTasks((currentTasks) =>
+          currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
+        );
+        closeTaskForm();
+      })
+      .catch((err) => setError(err?.message ?? 'Failed to update task.'));
   }
 
   async function deleteTask(taskToDelete) {

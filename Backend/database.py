@@ -5,10 +5,13 @@ Uses SQLAlchemy to connect to PostgreSQL. The connection string is read from
 the DATABASE_URL environment variable, with a sensible local default.
 
 Example DATABASE_URL for a local PostgreSQL install:
-    postgresql+psycopg2://postgres:yourpassword@localhost:5432/tasksdb
+    postgresql+psycopg://postgres:yourpassword@localhost:5432/tasksdb
 
 Override it with an env var or a Backend/.env file:
-    DATABASE_URL=postgresql+psycopg2://postgres:secret@localhost:5432/tasksdb
+    DATABASE_URL=postgresql+psycopg://postgres:secret@localhost:5432/tasksdb
+
+Uses psycopg v3 (the "psycopg" package) which ships prebuilt wheels for
+modern Python versions, avoiding the need for a C compiler on Windows.
 """
 
 import os
@@ -22,7 +25,7 @@ load_dotenv()
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+psycopg2://postgres:postgres@localhost:5432/tasksdb",
+    "postgresql+psycopg://postgres:postgres@localhost:5432/tasksdb",
 )
 
 engine = create_engine(DATABASE_URL, echo=False, future=True)

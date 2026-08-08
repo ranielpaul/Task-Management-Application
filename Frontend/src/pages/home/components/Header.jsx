@@ -62,9 +62,6 @@ export function StatusDropdown({
 }
 
 // SearchFilterControls placeholder.
-// Future contents:
-// - Filter tasks by All, Active, Inactive, or Completed.
-// - Combine the selected status with the task name search value.
 export function SearchFilterControls({ selectedStatus = 'All', onFilterTask }) {
   return (
     <StatusDropdown
@@ -99,9 +96,10 @@ export function Header({
       />
       <button
         type="button"
-        className="flex h-10 w-full items-center justify-center border-y border-gray-300 bg-teal-600 px-4 text-white hover:bg-teal-700"
+        className="flex h-10 w-full items-center justify-center gap-x-2 border-y border-gray-300 bg-teal-600 px-4 text-white hover:bg-teal-700"
         onClick={() => onApplySearch?.()}
       >
+        <p> Search </p> 
         <Search className="h-4 w-4" aria-hidden="true" />
         <span className="sr-only">Search task</span>
       </button>

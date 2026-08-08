@@ -1,6 +1,7 @@
 """Pydantic request/response schemas for the Task API."""
 
 from typing import Literal, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -26,5 +27,5 @@ class TaskUpdate(BaseModel):
 class TaskRead(TaskBase):
     model_config = ConfigDict(from_attributes=True)
 
-    id: str
+    id: UUID
     status: TaskStatus
