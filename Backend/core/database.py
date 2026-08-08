@@ -1,19 +1,3 @@
-"""
-Database setup for the Task Management application.
-
-Uses SQLAlchemy to connect to PostgreSQL. The connection string is read from
-the DATABASE_URL environment variable, with a sensible local default.
-
-Example DATABASE_URL for a local PostgreSQL install:
-    postgresql+psycopg://postgres:yourpassword@localhost:5432/tasksdb
-
-Override it with an env var or a Backend/.env file:
-    DATABASE_URL=postgresql+psycopg://postgres:secret@localhost:5432/tasksdb
-
-Uses psycopg v3 (the "psycopg" package) which ships prebuilt wheels for
-modern Python versions, avoiding the need for a C compiler on Windows.
-"""
-
 import os
 
 from dotenv import load_dotenv

@@ -1,9 +1,5 @@
 import { TaskRow } from './TaskRow';
 
-// TaskTable.
-// - Receives tasks as props from useTasks.
-// - Renders one table row per task with State and Status columns.
-// - Filtering is handled in the parent Header (outside this table).
 export function TaskTable({
   tasks = [],
   isLoading = false,

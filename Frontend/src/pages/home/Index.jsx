@@ -2,19 +2,30 @@ import { Plus } from 'lucide-react';
 import Header from './components/Header';
 import { TaskForm } from './components/TaskForm';
 import { TaskTable } from './components/TaskTable';
-import { useTasks } from '../../hooks/useTasks';
+import { useTaskFilters } from '../../hooks/useTaskFilters';
+import { useTaskCRUD } from '../../hooks/useTaskCRUD';
 
 // Home page.
-// - Connects task data, loading/error state, and CRUD handlers to the UI.
-// - Keeps page composition here while individual UI sections live in components.
+// - Uses useTaskFilters (search/state/status) and useTaskCRUD (task data + ops).
+// - Wires their values/handlers into the Header, TaskForm, and TaskTable.
 export function Home() {
   const {
-    tasks,
     searchTerm,
     selectedState,
     selectedStatus,
+    filters,
+    searchTasks,
+    applySearch,
+    filterByState,
+    filterByStatus,
+  } = useTaskFilters();
+
+  const {
+    tasks,
     isTaskFormOpen,
     selectedTask,
+    isLoading,
+    error,
     openAddTaskForm,
     closeTaskForm,
     createTask,
@@ -22,13 +33,7 @@ export function Home() {
     deleteTask,
     toggleTaskStatus,
     toggleTaskState,
-    searchTasks,
-    applySearch,
-    filterByState,
-    filterByStatus,
-    isLoading,
-    error,
-  } = useTasks();
+  } = useTaskCRUD(filters);
 
   return (
     <main className="space-y-6">
@@ -45,7 +50,12 @@ export function Home() {
         </div>
       )}
 
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+
+        <p className = "text-sm text-gray-500">
+          Status and State can be toggled by clicking on the respective columns in the table or via the Actions menu.
+        </p>
+
         <button
           type="button"
           className="flex h-9 w-fit items-center gap-2 rounded bg-teal-600 px-4 text-sm font-medium text-white hover:bg-teal-700"

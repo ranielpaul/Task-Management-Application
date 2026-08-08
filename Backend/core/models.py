@@ -1,5 +1,3 @@
-"""SQLAlchemy ORM models for the Task Management application."""
-
 import uuid
 from datetime import datetime
 

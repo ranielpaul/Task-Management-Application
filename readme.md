@@ -1,6 +1,6 @@
 # Task Management Application
 
-This repository is for a fullstack task management application.
+A fullstack task management application with a React frontend, a FastAPI backend, and a PostgreSQL database.
 
 ## Stack Involved
 
@@ -8,83 +8,82 @@ This repository is for a fullstack task management application.
 - Backend: FastAPI with Python.
 - Database: PostgreSQL.
 - API client: Axios.
+- ORM: SQLAlchemy 2.0 (with psycopg v3 driver).
 
+---
 
-## Backend
+## Backend (FastAPI)
 
-- `Backend/main.py` is reserved for the backend application entry point.
-- Future backend work should define the FastAPI server, task routes, request validation, and PostgreSQL database connection here or import them from dedicated backend modules.
-- No backend functionality has been implemented yet.
+The backend lives in `Backend/` and is organized as a small package with a `core` module for shared concerns.
 
-## Frontend 
+- `Backend/main.py` — Application entry point. Creates the FastAPI `app`, registers CORS middleware, wires in the task router, and creates tables on startup (`Base.metadata.create_all`).
+- `Backend/routers/tasks.py` — Task REST endpoints under `/api/tasks`:
+  - `GET /api/tasks` — list tasks, optionally filtered by `search`, `state`, and/or `status`.
+  - `POST /api/tasks` — create a task.
+  - `GET /api/tasks/{task_id}` — fetch one task.
+  - `PUT /api/tasks/{task_id}` — update title, description, state, and/or status.
+  - `PATCH /api/tasks/{task_id}/toggle` — toggle status between Completed and Incomplete.
+  - `DELETE /api/tasks/{task_id}` — delete a task.
+  - Path params are typed as `UUID` so invalid IDs return a 404 instead of crashing.
+- `Backend/core/database.py` — SQLAlchemy `engine`, `SessionLocal`, `Base`, and a `get_db` dependency. Reads `DATABASE_URL` from an env var or `.env` file, defaulting to `postgresql+psycopg://postgres:postgres@localhost:5432/tasksdb`.
+- `Backend/core/models.py` — SQLAlchemy ORM models. The `Task` model has `id` (UUID), `title`, `description`, `state` (`Active`/`Inactive`), `status` (`Completed`/`Incomplete`), and `created_at`.
+- `Backend/core/schemas.py` — Pydantic request/response schemas (`TaskCreate`, `TaskUpdate`, `TaskRead`) used for validation and serialization.
+- `Backend/core/seeder.py` — Seeds the `tasks` table with sample data. Run with `python -m core.seeder` or `python -m core.seeder --reset`.
 
-- `src/api/` should contain client-side API utilities.
-- `src/api/Axios.js` should eventually export the configured Axios client, including the base API URL and shared request settings.
-- `src/api/TaskAPI.js` should eventually export only the required task API functions: create, read, update, delete, search by name, and filter by status.
-- `src/hooks/` should contain reusable React hooks.
-- `src/hooks/useTasks.js` should eventually hold task state, loading/error state, and functions that connect UI components to the task API.
-- `src/pages/` should contain route-level page folders.
-- `src/pages/home/Index.jsx` is the home dashboard page where the header, task actions, and task table are composed.
-- `src/pages/home/components/` should contain components that belong only to the home dashboard.
+### Backend setup & running
 
-## Home Components
+```bash
+cd Backend
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
+python -m core.seeder --reset   # optional: seed sample data
+uvicorn main:app --reload
+```
 
-- `Header.jsx` is reserved for the page title area, task name search input, and a button-triggered status filter dropdown with All, Active, Inactive, and Completed options.
-- `TaskForm.jsx` is reserved for add and edit task form placeholders using only task title and description fields.
-- `TaskTable.jsx` contains the current task table structure and should later receive task data from `useTasks`.
-- `TaskRow.jsx` is reserved for rendering one task per table row.
-- `TaskActions.jsx` is reserved for row-level edit, complete/incomplete, and delete buttons.
-- `Index.jsx` wires placeholder hook values and handlers into the home components through props.
+> Note: always run Python from within the activated `venv`, otherwise `psycopg` and other dependencies will not be found.
 
-## Required Features
+---
 
-- Add a task.
-- Mark a task as complete or incomplete.
-- Edit task details such as task title and description.
-- Delete a task.
-- Search tasks by name.
-- Filter tasks by All, Active, Inactive, and Completed status.
-- Combine search and filter behavior.
+## Frontend (React + Vite + Tailwind)
 
-## Design Notes
+The frontend lives in `Frontend/`.
 
-The frontend should stay simple and dashboard-focused:
+- `src/api/Axios.js` — Exports the configured Axios client (`apiClient`) with base URL `http://localhost:8000` (overridable via `VITE_API_BASE_URL`).
+- `src/api/TaskAPI.js` — Exports `taskApi` with all task functions: fetch (with search/state/status filters), create, update, delete, toggle status, toggle state, search, and filter helpers.
+- `src/hooks/useTaskFilters.js` — React hook owning the search and filter UI state (`searchTerm`, `appliedSearchTerm`, `selectedState`, `selectedStatus`) and exposing `searchTasks`, `applySearch`, `filterByState`, `filterByStatus`, plus a derived `filters` object for the API.
+- `src/hooks/useTaskCRUD.js` — React hook focused on task data operations: fetches tasks from the backend (given the `filters` object), owns loading/error state and the add/edit modal, and exposes create/update/delete/toggle handlers.
+- `src/pages/home/Index.jsx` — Home dashboard page. Composes the Header and TaskTable, wires `useTaskFilters` and `useTaskCRUD` into the components via props.
+- `src/pages/home/components/Header.jsx` — Search bar (with a clear/`X` button that resets the search) plus the State and Status filter dropdowns.
+- `src/pages/home/components/FilterDropdown.jsx` — Reusable dropdown filter used by the Header for State and Status.
+- `src/pages/home/components/TaskTable.jsx` — Renders the task table: Task, Description, State, Status, and Actions columns.
+- `src/pages/home/components/TaskRow.jsx` — Renders one task row. State and Status cells are clickable pills that toggle the value.
+- `src/pages/home/components/TaskActions.jsx` — Row-level Edit and Delete buttons.
+- `src/pages/home/components/TaskForm.jsx` — Add/Edit task modal with title, description, state, and status fields.
 
-- Page background: `gray-100`
-- Primary actions: `teal-600`
-- Secondary actions: `sky-600`
-- Main text: `gray-700` or darker
-- Supporting text: `gray-500`
-- Cards: white background, light gray border, subtle shadow, compact spacing
-
-## Installation
-
-Install frontend dependencies:
+### Frontend setup & running
 
 ```bash
 cd Frontend
 npm install
-```
-
-Backend dependency setup has not been defined yet.
-
-## Running The Project
-
-Start the frontend:
-
-```bash
-cd Frontend
 npm run dev
 ```
 
-Start the backend after backend dependencies and routes are added:
+---
+
+## Running The Project
+
+Start the backend (from `Backend/`):
 
 ```bash
-cd Backend
 .\venv\Scripts\activate
-uvicorn main:app
+uvicorn main:app --reload
 ```
 
-## Current Status
+Start the frontend (from `Frontend/`):
 
-This is a planning scaffold. The app should remain barebones until the API, hook logic, backend routes, and real task data are intentionally implemented.
+```bash
+npm run dev
+```
+
+The frontend dev server runs on `http://localhost:5173` and calls the API at `http://localhost:8000`. CORS is configured in `Backend/main.py` to allow the Vite dev server origins.

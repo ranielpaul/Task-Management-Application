@@ -1,11 +1,5 @@
 import { TaskActions } from './TaskActions';
 
-// TaskRow.
-// - Receives one task object from TaskTable.
-// - Displays task fields in the correct table columns.
-// - State and Status cells are clickable to toggle Active/Inactive and
-//   Completed/Incomplete respectively.
-// - Passes row-specific handlers to TaskActions.
 export function TaskRow({
   task,
   rowIndex = 0,

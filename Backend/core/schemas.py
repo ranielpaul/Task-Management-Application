@@ -1,5 +1,3 @@
-"""Pydantic request/response schemas for the Task API."""
-
 from typing import Literal, Optional
 from uuid import UUID
 

@@ -1,8 +1,5 @@
 import { Pencil, Trash2 } from 'lucide-react';
 
-// DeleteTaskButton.
-// - Asks for confirmation before deleting a task.
-// - Calls the delete handler from useTasks.
 export function DeleteTaskButton({ task, onDeleteTask }) {
   function handleDelete() {
     const confirmed = window.confirm(`Delete task "${task?.title ?? 'this task'}"?`);
@@ -24,9 +21,6 @@ export function DeleteTaskButton({ task, onDeleteTask }) {
   );
 }
 
-// EditTaskButton.
-// - Opens the task form in edit mode for the selected row.
-// - Passes the selected task into the edit flow.
 export function EditTaskButton({ task, onEditTask }) {
   return (
     <button
@@ -41,9 +35,6 @@ export function EditTaskButton({ task, onEditTask }) {
   );
 }
 
-// TaskActions.
-// - Receives a task object and row action handlers as props.
-// - Renders edit and delete controls for one task row.
 export function TaskActions({ task, onEditTask, onDeleteTask }) {
   return (
     <div className="flex justify-center gap-2">

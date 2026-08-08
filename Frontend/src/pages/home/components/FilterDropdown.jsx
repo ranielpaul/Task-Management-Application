@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-// A compact dropdown filter control used in the header (outside the table).
-// Options render as a small popover menu.
 export function FilterDropdown({ label, value, options, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
 

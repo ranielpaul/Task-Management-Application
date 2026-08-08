@@ -1,16 +1,3 @@
-"""
-Task Management API entry point.
-
-FastAPI server exposed by the task router. Kept small on purpose: the shared
-database setup, ORM models, validation schemas, and the seeder live in the
-`core` package, while the task routes live in routers/tasks.py.
-
-Run locally:
-    cd Backend
-    .\\venv\\Scripts\\activate
-    uvicorn main:app --reload
-"""
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
