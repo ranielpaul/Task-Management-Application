@@ -64,22 +64,22 @@ export function Home() {
         onCancel={closeTaskForm}
       />
 
-      <section className="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
+      <section className="rounded-lg border border-gray-200 bg-white shadow-sm">
         <div className="border-b border-gray-200 px-4 py-4">
           <Header
             searchTerm={searchTerm}
+            selectedState={selectedState}
+            selectedStatus={selectedStatus}
             onSearchTask={searchTasks}
             onApplySearch={applySearch}
+            onFilterByState={filterByState}
+            onFilterByStatus={filterByStatus}
           />
         </div>
 
         <TaskTable
           tasks={tasks}
-          selectedState={selectedState}
-          selectedStatus={selectedStatus}
           isLoading={isLoading}
-          onFilterByState={filterByState}
-          onFilterByStatus={filterByStatus}
           onEditTask={editTask}
           onDeleteTask={deleteTask}
           onToggleTaskStatus={toggleTaskStatus}
