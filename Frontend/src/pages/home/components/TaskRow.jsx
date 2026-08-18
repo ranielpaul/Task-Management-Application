@@ -20,10 +20,10 @@ export function TaskRow({
           type="button"
           title="Click to toggle Completed/Incomplete"
           onClick={() => onToggleTaskStatus?.(task)}
-          className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium transition hover:opacity-80 ${
+          className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium transition ${
             task?.status === 'Completed'
-              ? 'bg-sky-100 text-sky-700'
-              : 'bg-amber-100 text-amber-700'
+              ? 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+              : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
           }`}
         >
           {task?.status ?? 'No status'}
