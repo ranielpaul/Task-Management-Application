@@ -5,18 +5,13 @@ import { TaskTable } from './components/TaskTable';
 import { useTaskFilters } from '../../hooks/useTaskFilters';
 import { useTaskCRUD } from '../../hooks/useTaskCRUD';
 
-// Home page.
-// - Uses useTaskFilters (search/state/status) and useTaskCRUD (task data + ops).
-// - Wires their values/handlers into the Header, TaskForm, and TaskTable.
 export function Home() {
   const {
     searchTerm,
-    selectedState,
     selectedStatus,
     filters,
     searchTasks,
     applySearch,
-    filterByState,
     filterByStatus,
   } = useTaskFilters();
 
@@ -32,7 +27,6 @@ export function Home() {
     editTask,
     deleteTask,
     toggleTaskStatus,
-    toggleTaskState,
   } = useTaskCRUD(filters);
 
   return (
@@ -42,18 +36,13 @@ export function Home() {
       </h1>
 
       {error && (
-        <div
-          role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        >
-          {error}
-        </div>
+        console.log(error)
       )}
 
       <div className="flex justify-between">
 
         <p className = "text-sm text-gray-500">
-          Status and State can be toggled by clicking on the respective columns in the table or via the Actions menu.
+          Status can be toggled by clicking on the respective columns in the table or via the Actions modal.
         </p>
 
         <button
@@ -78,11 +67,9 @@ export function Home() {
         <div className="border-b border-gray-200 px-4 py-4">
           <Header
             searchTerm={searchTerm}
-            selectedState={selectedState}
             selectedStatus={selectedStatus}
             onSearchTask={searchTasks}
             onApplySearch={applySearch}
-            onFilterByState={filterByState}
             onFilterByStatus={filterByStatus}
           />
         </div>
@@ -93,7 +80,6 @@ export function Home() {
           onEditTask={editTask}
           onDeleteTask={deleteTask}
           onToggleTaskStatus={toggleTaskStatus}
-          onToggleTaskState={toggleTaskState}
         />
       </section>
     </main>

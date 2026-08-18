@@ -1,16 +1,13 @@
 import { Search, X } from 'lucide-react';
 import { FilterDropdown } from './FilterDropdown';
 
-const stateOptions = ['All', 'Active', 'Inactive'];
 const statusOptions = ['All', 'Completed', 'Incomplete'];
 
 export function Header({
   searchTerm = '',
-  selectedState = 'All',
   selectedStatus = 'All',
   onSearchTask,
   onApplySearch,
-  onFilterByState,
   onFilterByStatus,
 }) {
   function handleChange(event) {
@@ -45,12 +42,6 @@ export function Header({
       </div>
 
       <div className="flex items-center">
-        <FilterDropdown
-          label="State"
-          value={selectedState}
-          options={stateOptions}
-          onChange={onFilterByState}
-        />
         <FilterDropdown
           label="Status"
           value={selectedStatus}

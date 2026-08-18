@@ -86,12 +86,11 @@ function ModalShell({ title, onCancel, children, footer }) {
 export function AddTaskForm({ onCreateTask, onCancel }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [state, setState] = useState('Active');
   const [status, setStatus] = useState('Incomplete');
 
   function handleSubmit(event) {
     event.preventDefault();
-    onCreateTask?.({ title, description, state, status });
+    onCreateTask?.({ title, description, status });
   }
 
   return (
@@ -125,13 +124,7 @@ export function AddTaskForm({ onCreateTask, onCancel }) {
           value={description}
           onChange={setDescription}
         />
-        <div className="grid grid-cols-2 gap-3">
-          <SelectField
-            label="State"
-            value={state}
-            onChange={setState}
-            options={['Active', 'Inactive']}
-          />
+        <div className="flex flex-col gap-1">
           <SelectField
             label="Status"
             value={status}
@@ -147,12 +140,11 @@ export function AddTaskForm({ onCreateTask, onCancel }) {
 export function EditTaskForm({ selectedTask, onEditTask, onCancel }) {
   const [title, setTitle] = useState(selectedTask?.title ?? '');
   const [description, setDescription] = useState(selectedTask?.description ?? '');
-  const [state, setState] = useState(selectedTask?.state ?? 'Active');
   const [status, setStatus] = useState(selectedTask?.status ?? 'Incomplete');
 
   function handleSubmit(event) {
     event.preventDefault();
-    onEditTask?.({ title, description, state, status });
+    onEditTask?.({ title, description, status });
   }
 
   return (
@@ -190,13 +182,7 @@ export function EditTaskForm({ selectedTask, onEditTask, onCancel }) {
           value={description}
           onChange={setDescription}
         />
-        <div className="grid grid-cols-2 gap-3">
-          <SelectField
-            label="State"
-            value={state}
-            onChange={setState}
-            options={['Active', 'Inactive']}
-          />
+        <div className="flex flex-col gap-1">
           <SelectField
             label="Status"
             value={status}

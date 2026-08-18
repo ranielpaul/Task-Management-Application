@@ -6,17 +6,15 @@ export function TaskTable({
   onEditTask,
   onDeleteTask,
   onToggleTaskStatus,
-  onToggleTaskState,
 }) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full table-fixed text-left text-sm">
         <colgroup>
           <col className="w-[20%]" />
-          <col className="w-[40%]" />
-          <col className="w-[12%]" />
-          <col className="w-[12%]" />
-          <col className="w-[16%]" />
+          <col className="w-[50%]" />
+          <col className="w-[10%]" />
+          <col className="w-[20%]" />
         </colgroup>
         <thead className="border-b border-gray-200 bg-gray-100 text-xs uppercase tracking-wider text-gray-500">
           <tr>
@@ -25,9 +23,6 @@ export function TaskTable({
             </th>
             <th scope="col" className="border-r border-gray-200 px-5 py-4 font-semibold">
               Description
-            </th>
-            <th scope="col" className="border-r border-gray-200 px-5 py-4 text-center font-semibold">
-              State
             </th>
             <th scope="col" className="border-r border-gray-200 px-5 py-4 text-center font-semibold">
               Status
@@ -59,7 +54,6 @@ export function TaskTable({
                 onEditTask={onEditTask}
                 onDeleteTask={onDeleteTask}
                 onToggleTaskStatus={onToggleTaskStatus}
-                onToggleTaskState={onToggleTaskState}
               />
             ))
           )}

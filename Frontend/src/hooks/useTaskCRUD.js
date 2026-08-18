@@ -37,7 +37,7 @@ export function useTaskCRUD(filters) {
     return () => {
       isMounted = false;
     };
-  }, [filters?.search, filters?.state, filters?.status]);
+  }, [filters?.search, filters?.status]);
 
   function openAddTaskForm() {
     setSelectedTask(null);
@@ -69,11 +69,6 @@ export function useTaskCRUD(filters) {
     setIsTaskFormOpen(true);
   }
 
-  // Called two ways:
-  // 1. From a row Edit button with the full task object (has an `id`) -> open
-  //    the edit modal for that task.
-  // 2. From the EditTaskForm submit with `{ title, description, state, status }`
-  //    (no `id`) -> save the changes to the currently selected task.
   function editTask(taskOrData) {
     if (taskOrData?.id) {
       selectTaskForEdit(taskOrData);
@@ -125,18 +120,6 @@ export function useTaskCRUD(filters) {
     }
   }
 
-  async function toggleTaskState(taskToToggle) {
-    try {
-      setError('');
-      const updatedTask = await taskApi.toggleTaskState(taskToToggle?.id);
-      setTasks((currentTasks) =>
-        currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
-      );
-    } catch (err) {
-      setError(err?.message ?? 'Failed to update task state.');
-    }
-  }
-
   return {
     tasks,
     isTaskFormOpen,
@@ -149,7 +132,6 @@ export function useTaskCRUD(filters) {
     editTask,
     deleteTask,
     toggleTaskStatus,
-    toggleTaskState,
   };
 }
 
