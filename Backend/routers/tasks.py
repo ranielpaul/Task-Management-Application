@@ -14,15 +14,11 @@ router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 @router.get("", response_model=List[TaskRead])
 def list_tasks(
     search: Optional[str] = Query(default=None, description="Filter by task title"),
-    state: Optional[str] = Query(default=None, description="State to filter by (Active/Inactive)"),
     status: Optional[str] = Query(default=None, description="Status to filter by (Completed/Incomplete)"),
     db: Session = Depends(get_db),
 ):
-    """Return all tasks, optionally filtered by name search, state, and/or status."""
+    """Return all tasks, optionally filtered by name search and/or status."""
     query = db.query(Task)
-
-    if state and state != "All":
-        query = query.filter(Task.state == state)
 
     if status and status != "All":
         query = query.filter(Task.status == status)
@@ -40,7 +36,6 @@ def create_task(payload: TaskCreate, db: Session = Depends(get_db)):
     task = Task(
         title=payload.title.strip(),
         description=payload.description.strip(),
-        state=payload.state,
         status=payload.status,
     )
     db.add(task)
@@ -60,7 +55,7 @@ def get_task(task_id: UUID, db: Session = Depends(get_db)):
 
 @router.put("/{task_id}", response_model=TaskRead)
 def update_task(task_id: UUID, payload: TaskUpdate, db: Session = Depends(get_db)):
-    """Update a task's title, description, state, and/or status."""
+    """Update a task's title, description, and/or status."""
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -69,8 +64,6 @@ def update_task(task_id: UUID, payload: TaskUpdate, db: Session = Depends(get_db
         task.title = payload.title.strip()
     if payload.description is not None:
         task.description = payload.description.strip()
-    if payload.state is not None:
-        task.state = payload.state
     if payload.status is not None:
         task.status = payload.status
 

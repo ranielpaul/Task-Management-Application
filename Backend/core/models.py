@@ -1,21 +1,25 @@
+import os
 import uuid
 from datetime import datetime
 
+from dotenv import load_dotenv
 from sqlalchemy import Column, DateTime, String
 from sqlalchemy import Enum as SqlEnum
 from sqlalchemy.dialects.postgresql import UUID
 
 from .database import Base
 
-# Keep these in sync with schemas.py and the frontend filter options.
-VALID_STATES = ["Active", "Inactive"]
+load_dotenv()
+
+TABLE_NAME = os.getenv("DATABASE_TABLE_NAME", "tasks")
+
 VALID_STATUSES = ["Completed", "Incomplete"]
 
 
 class Task(Base):
     """A single task row backed by the PostgreSQL database."""
 
-    __tablename__ = "tasks"
+    __tablename__ = TABLE_NAME
 
     id = Column(
         UUID(as_uuid=True),
@@ -24,15 +28,9 @@ class Task(Base):
     )
     title = Column(String(255), nullable=False)
     description = Column(String(1000), nullable=False, default="")
-    state = Column(
-        SqlEnum(*VALID_STATES, name="task_state"),
-        nullable=False,
-        default="Active",
-    )
     status = Column(
         SqlEnum(*VALID_STATUSES, name="task_status"),
         nullable=False,
         default="Incomplete",
     )
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-
