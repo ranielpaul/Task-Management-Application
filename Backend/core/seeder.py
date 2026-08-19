@@ -18,42 +18,42 @@ SAMPLE_TASKS = [
     {
         "title": "Design the dashboard layout",
         "description": "Create wireframes and a color palette for the task dashboard.",
-        "status": "Completed",
+        "is_complete": True,
     },
     {
         "title": "Set up the backend API",
         "description": "Build FastAPI routes, request validation, and a PostgreSQL connection.",
-        "status": "Incomplete",
+        "is_complete": False,
     },
     {
         "title": "Write API client functions",
         "description": "Implement create, read, update, delete, search, and filter in TaskAPI.",
-        "status": "Incomplete",
+        "is_complete": False,
     },
     {
         "title": "Add task search and filter",
         "description": "Combine name search with status filtering in the home header.",
-        "status": "Completed",
+        "is_complete": True,
     },
     {
         "title": "Write documentation",
         "description": "Document how to run the frontend and backend locally.",
-        "status": "Completed",
+        "is_complete": True,
     },
     {
         "title": "Review pull requests",
         "description": "Review and merge pending feature branches for the team.",
-        "status": "Incomplete",
+        "is_complete": False,
     },
     {
         "title": "Set up CI pipeline",
         "description": "Add linting and automated tests to the repository.",
-        "status": "Incomplete",
+        "is_complete": False,
     },
     {
         "title": "Polish the dashboard",
         "description": "Refine spacing, colors, and empty states for a cleaner UI.",
-        "status": "Incomplete",
+        "is_complete": False,
     },
 ]
 

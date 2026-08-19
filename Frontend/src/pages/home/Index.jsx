@@ -8,11 +8,11 @@ import { useTaskCRUD } from '../../hooks/useTaskCRUD';
 export function Home() {
   const {
     searchTerm,
-    selectedStatus,
+    selectedComplete,
     filters,
     searchTasks,
     applySearch,
-    filterByStatus,
+    filterByComplete,
   } = useTaskFilters();
 
   const {
@@ -65,13 +65,13 @@ export function Home() {
 
       <section className="rounded-lg border border-gray-200 bg-white shadow-sm">
         <div className="border-b border-gray-200 px-4 py-4">
-          <Header
-            searchTerm={searchTerm}
-            selectedStatus={selectedStatus}
-            onSearchTask={searchTasks}
-            onApplySearch={applySearch}
-            onFilterByStatus={filterByStatus}
-          />
+        <Header
+          searchTerm={searchTerm}
+          selectedComplete={selectedComplete}
+          onSearchTask={searchTasks}
+          onApplySearch={applySearch}
+          onFilterByComplete={filterByComplete}
+        />
         </div>
 
         <TaskTable

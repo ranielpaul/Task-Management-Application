@@ -33,22 +33,17 @@ function EmptyFormTextarea({ label, value, onChange }) {
   );
 }
 
-function SelectField({ label, value, onChange, options }) {
+function CheckboxField({ label, value, onChange }) {
   return (
-    <label className="block">
-      <span className="mb-1 block text-sm font-medium text-gray-700">{label}</span>
-      <select
+    <label className="flex items-center gap-2">
+      <input
+        type="checkbox"
         aria-label={label}
-        value={value}
-        className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-700 focus:border-sky-600 focus:outline-none focus:ring-1 focus:ring-sky-600"
-        onChange={(event) => onChange(event.target.value)}
-      >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+        checked={value}
+        onChange={(event) => onChange(event.target.checked)}
+        className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-600"
+      />
+      <span className="text-sm font-medium text-gray-700">{label}</span>
     </label>
   );
 }
@@ -86,11 +81,11 @@ function ModalShell({ title, onCancel, children, footer }) {
 export function AddTaskForm({ onCreateTask, onCancel }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [status, setStatus] = useState('Incomplete');
+  const [isComplete, setIsComplete] = useState(false);
 
   function handleSubmit(event) {
     event.preventDefault();
-    onCreateTask?.({ title, description, status });
+    onCreateTask?.({ title, description, isComplete });
   }
 
   return (
@@ -125,11 +120,10 @@ export function AddTaskForm({ onCreateTask, onCancel }) {
           onChange={setDescription}
         />
         <div className="flex flex-col gap-1">
-          <SelectField
-            label="Status"
-            value={status}
-            onChange={setStatus}
-            options={['Incomplete', 'Completed']}
+          <CheckboxField
+            label="Completed"
+            value={isComplete}
+            onChange={setIsComplete}
           />
         </div>
       </form>
@@ -140,11 +134,11 @@ export function AddTaskForm({ onCreateTask, onCancel }) {
 export function EditTaskForm({ selectedTask, onEditTask, onCancel }) {
   const [title, setTitle] = useState(selectedTask?.title ?? '');
   const [description, setDescription] = useState(selectedTask?.description ?? '');
-  const [status, setStatus] = useState(selectedTask?.status ?? 'Incomplete');
+  const [isComplete, setIsComplete] = useState(selectedTask?.is_complete ?? false);
 
   function handleSubmit(event) {
     event.preventDefault();
-    onEditTask?.({ title, description, status });
+    onEditTask?.({ title, description, isComplete });
   }
 
   return (
@@ -183,11 +177,10 @@ export function EditTaskForm({ selectedTask, onEditTask, onCancel }) {
           onChange={setDescription}
         />
         <div className="flex flex-col gap-1">
-          <SelectField
-            label="Status"
-            value={status}
-            onChange={setStatus}
-            options={['Incomplete', 'Completed']}
+          <CheckboxField
+            label="Completed"
+            value={isComplete}
+            onChange={setIsComplete}
           />
         </div>
       </form>

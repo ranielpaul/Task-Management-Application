@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export function useTaskFilters() {
   const [searchTerm, setSearchTerm] = useState('');
   const [appliedSearchTerm, setAppliedSearchTerm] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('All');
+  const [selectedComplete, setSelectedComplete] = useState('All');
 
   function searchTasks(nextSearchTerm) {
     setSearchTerm(nextSearchTerm);
@@ -13,23 +13,23 @@ export function useTaskFilters() {
     setAppliedSearchTerm(searchTerm);
   }
 
-  function filterByStatus(nextStatus) {
-    setSelectedStatus(nextStatus);
+  function filterByComplete(nextComplete) {
+    setSelectedComplete(nextComplete);
   }
 
-  const filters = {
+  const filters = useMemo(() => ({
     search: appliedSearchTerm || undefined,
-    status: selectedStatus,
-  };
+    isComplete: selectedComplete === 'All' ? undefined : selectedComplete === 'Completed',
+  }), [appliedSearchTerm, selectedComplete]);
 
   return {
     searchTerm,
     appliedSearchTerm,
-    selectedStatus,
+    selectedComplete,
     filters,
     searchTasks,
     applySearch,
-    filterByStatus,
+    filterByComplete,
   };
 }
 

@@ -37,7 +37,7 @@ export function useTaskCRUD(filters) {
     return () => {
       isMounted = false;
     };
-  }, [filters?.search, filters?.status]);
+  }, [filters]);
 
   function openAddTaskForm() {
     setSelectedTask(null);
@@ -111,12 +111,12 @@ export function useTaskCRUD(filters) {
   async function toggleTaskStatus(taskToToggle) {
     try {
       setError('');
-      const updatedTask = await taskApi.toggleTaskStatus(taskToToggle?.id);
+      const updatedTask = await taskApi.toggleTaskComplete(taskToToggle?.id);
       setTasks((currentTasks) =>
         currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
       );
     } catch (err) {
-      setError(err?.message ?? 'Failed to update task status.');
+      setError(err?.message ?? 'Failed to update task completion.');
     }
   }
 

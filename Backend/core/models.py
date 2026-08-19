@@ -3,8 +3,7 @@ import uuid
 from datetime import datetime
 
 from dotenv import load_dotenv
-from sqlalchemy import Column, DateTime, String
-from sqlalchemy import Enum as SqlEnum
+from sqlalchemy import Boolean, Column, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID
 
 from .database import Base
@@ -12,8 +11,6 @@ from .database import Base
 load_dotenv()
 
 TABLE_NAME = os.getenv("DATABASE_TABLE_NAME", "tasks")
-
-VALID_STATUSES = ["Completed", "Incomplete"]
 
 
 class Task(Base):
@@ -28,9 +25,5 @@ class Task(Base):
     )
     title = Column(String(255), nullable=False)
     description = Column(String(1000), nullable=False, default="")
-    status = Column(
-        SqlEnum(*VALID_STATUSES, name="task_status"),
-        nullable=False,
-        default="Incomplete",
-    )
+    is_complete = Column(Boolean, nullable=False, default=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

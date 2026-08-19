@@ -1,26 +1,20 @@
-import { Search, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { FilterDropdown } from './FilterDropdown';
 
-const statusOptions = ['All', 'Completed', 'Incomplete'];
+const completeOptions = ['All', 'Completed', 'Incomplete'];
 
 export function Header({
   searchTerm = '',
-  selectedStatus = 'All',
+  selectedComplete = 'All',
   onSearchTask,
   onApplySearch,
-  onFilterByStatus,
+  onFilterByComplete,
 }) {
   function handleChange(event) {
     onSearchTask?.(event.target.value);
-    // When the field is emptied, immediately reset the applied search.
     if (event.target.value === '') {
       onApplySearch?.();
     }
-  }
-
-  function clearSearch() {
-    onSearchTask?.('');
-    onApplySearch?.();
   }
 
   return (
@@ -44,9 +38,9 @@ export function Header({
       <div className="flex items-center">
         <FilterDropdown
           label="Status"
-          value={selectedStatus}
-          options={statusOptions}
-          onChange={onFilterByStatus}
+          value={selectedComplete}
+          options={completeOptions}
+          onChange={onFilterByComplete}
         />        
       </div>
       <button

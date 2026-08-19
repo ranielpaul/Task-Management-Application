@@ -14,14 +14,14 @@ router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 @router.get("", response_model=List[TaskRead])
 def list_tasks(
     search: Optional[str] = Query(default=None, description="Filter by task title"),
-    status: Optional[str] = Query(default=None, description="Status to filter by (Completed/Incomplete)"),
+    is_complete: Optional[bool] = Query(default=None, description="Filter by completion status"),
     db: Session = Depends(get_db),
 ):
-    """Return all tasks, optionally filtered by name search and/or status."""
+    """Return all tasks, optionally filtered by name search and/or completion status."""
     query = db.query(Task)
 
-    if status and status != "All":
-        query = query.filter(Task.status == status)
+    if is_complete is not None:
+        query = query.filter(Task.is_complete == is_complete)
 
     if search:
         term = f"%{search.strip()}%"
@@ -36,7 +36,7 @@ def create_task(payload: TaskCreate, db: Session = Depends(get_db)):
     task = Task(
         title=payload.title.strip(),
         description=payload.description.strip(),
-        status=payload.status,
+        is_complete=payload.is_complete,
     )
     db.add(task)
     db.commit()
@@ -55,7 +55,7 @@ def get_task(task_id: UUID, db: Session = Depends(get_db)):
 
 @router.put("/{task_id}", response_model=TaskRead)
 def update_task(task_id: UUID, payload: TaskUpdate, db: Session = Depends(get_db)):
-    """Update a task's title, description, and/or status."""
+    """Update a task's title, description, and/or completion status."""
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -64,8 +64,8 @@ def update_task(task_id: UUID, payload: TaskUpdate, db: Session = Depends(get_db
         task.title = payload.title.strip()
     if payload.description is not None:
         task.description = payload.description.strip()
-    if payload.status is not None:
-        task.status = payload.status
+    if payload.is_complete is not None:
+        task.is_complete = payload.is_complete
 
     db.commit()
     db.refresh(task)
@@ -73,13 +73,13 @@ def update_task(task_id: UUID, payload: TaskUpdate, db: Session = Depends(get_db
 
 
 @router.patch("/{task_id}/toggle", response_model=TaskRead)
-def toggle_task_status(task_id: UUID, db: Session = Depends(get_db)):
-    """Toggle a task's status between Completed and Incomplete."""
+def toggle_task_complete(task_id: UUID, db: Session = Depends(get_db)):
+    """Toggle a task's completion status."""
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
 
-    task.status = "Incomplete" if task.status == "Completed" else "Completed"
+    task.is_complete = not task.is_complete
     db.commit()
     db.refresh(task)
     return task

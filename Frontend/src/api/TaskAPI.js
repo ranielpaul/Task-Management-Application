@@ -1,22 +1,21 @@
 import { apiClient } from './Axios';
 
 export const taskApi = {
-  async fetchTasks({ search, status } = {}) {
+  async fetchTasks({ search, isComplete } = {}) {
     const response = await apiClient.get('/api/tasks', {
       params: {
         ...(search ? { search } : {}),
-        ...(status && status !== 'All' ? { status } : {}),
+        ...(isComplete !== undefined ? { is_complete: isComplete } : {}),
       },
     });
     return response.data;
   },
 
-  // Create a new task.
-  async createTask({ title, description, status = 'Incomplete' }) {
+  async createTask({ title, description, isComplete = false }) {
     const response = await apiClient.post('/api/tasks', {
       title: title.trim(),
       description: (description ?? '').trim(),
-      status,
+      is_complete: isComplete,
     });
     return response.data;
   },
@@ -27,7 +26,7 @@ export const taskApi = {
       ...(updates.description !== undefined
         ? { description: updates.description.trim() }
         : {}),
-      ...(updates.status !== undefined ? { status: updates.status } : {}),
+      ...(updates.isComplete !== undefined ? { is_complete: updates.isComplete } : {}),
     });
     return response.data;
   },
@@ -37,19 +36,17 @@ export const taskApi = {
     return true;
   },
 
-  async toggleTaskStatus(id) {
+  async toggleTaskComplete(id) {
     const response = await apiClient.patch(`/api/tasks/${id}/toggle`);
     return response.data;
   },
-
 
   async searchTasks(searchTerm) {
     return taskApi.fetchTasks({ search: searchTerm });
   },
 
-
-  async filterTasksByStatus(status) {
-    return taskApi.fetchTasks({ status });
+  async filterTasksByComplete(isComplete) {
+    return taskApi.fetchTasks({ isComplete });
   },
 };
 
